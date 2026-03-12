@@ -4,7 +4,7 @@ import path from "path";
 let db: Database.Database;
 
 export function initDatabase(): void {
-  const dbPath = path.join(__dirname, "..", "..", "loldle.db");
+  const dbPath = process.env.DB_PATH ?? path.join(__dirname, "..", "..", "loldle.db");
   db = new Database(dbPath);
   db.pragma("journal_mode = WAL");
   db.pragma("foreign_keys = ON");
