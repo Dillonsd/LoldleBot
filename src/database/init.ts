@@ -183,27 +183,27 @@ export interface UserStats {
   current_streak: number;
 }
 
-export function getUserStats(userId: string): UserStats {
+export function getUserStats(guildId: string, userId: string): UserStats {
   const stats = db
     .prepare(
       `SELECT
          COUNT(*) as games_played,
          SUM(CASE WHEN status = 'won' THEN 1 ELSE 0 END) as wins,
          ROUND(AVG(CASE WHEN status = 'won' THEN guess_count END), 1) as avg_guesses
-       FROM games WHERE user_id = ?`
+       FROM games WHERE guild_id = ? AND user_id = ?`
     )
-    .get(userId) as {
+    .get(guildId, userId) as {
     games_played: number;
     wins: number;
     avg_guesses: number | null;
   };
 
-  // Calculate current streak
+  // Calculate current streak (scoped to this server)
   const recentGames = db
     .prepare(
-      `SELECT status FROM games WHERE user_id = ? ORDER BY date DESC`
+      `SELECT status FROM games WHERE guild_id = ? AND user_id = ? ORDER BY date DESC`
     )
-    .all(userId) as { status: string }[];
+    .all(guildId, userId) as { status: string }[];
 
   let streak = 0;
   for (const game of recentGames) {

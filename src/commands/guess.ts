@@ -122,7 +122,7 @@ export async function execute(
     await interaction.reply({ embeds: [embed, victoryEmbed], ephemeral: true });
 
     // Public announcement in the channel
-    const stats = getUserStats(interaction.user.id);
+    const stats = getUserStats(guildId, interaction.user.id);
     const publicEmbed = buildPublicVictoryEmbed(interaction.user.id, guessNum, stats);
     const channel = interaction.channel;
     if (channel && "send" in channel) {

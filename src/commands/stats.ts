@@ -13,7 +13,8 @@ export async function execute(
   interaction: ChatInputCommandInteraction
 ): Promise<void> {
   const target = interaction.options.getUser("user") ?? interaction.user;
-  const stats = getUserStats(target.id);
+  const guildId = interaction.guildId!;
+  const stats = getUserStats(guildId, target.id);
   const embed = buildStatsEmbed(target.id, stats);
 
   await interaction.reply({ embeds: [embed] });

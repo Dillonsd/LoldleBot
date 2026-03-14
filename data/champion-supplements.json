@@ -1,7 +1,7 @@
 {
   "Aatrox": {
     "gender": "Male",
-    "positions": ["Top"],
+    "positions": ["Top", "Jungle"],
     "species": ["Darkin"],
     "rangeType": "Melee",
     "region": "Runeterra",
@@ -13,7 +13,7 @@
     "species": ["Vastaya"],
     "rangeType": "Ranged",
     "region": "Ionia",
-    "releaseYear": 2012
+    "releaseYear": 2011
   },
   "Akali": {
     "gender": "Female",
@@ -50,7 +50,7 @@
   "Amumu": {
     "gender": "Male",
     "positions": ["Jungle", "Support"],
-    "species": ["Undead"],
+    "species": ["Yordle"],
     "rangeType": "Melee",
     "region": "Shurima",
     "releaseYear": 2009
@@ -66,7 +66,7 @@
   "Annie": {
     "gender": "Female",
     "positions": ["Mid", "Support"],
-    "species": ["Human"],
+    "species": ["Human", "Magically Altered"],
     "rangeType": "Ranged",
     "region": "Noxus",
     "releaseYear": 2009
@@ -177,15 +177,15 @@
   },
   "Cassiopeia": {
     "gender": "Female",
-    "positions": ["Mid"],
-    "species": ["Human", "Vastaya"],
+    "positions": ["Mid", "Top"],
+    "species": ["Human", "Magically Altered"],
     "rangeType": "Ranged",
     "region": "Noxus",
     "releaseYear": 2010
   },
   "Chogath": {
     "gender": "Male",
-    "positions": ["Top", "Support"],
+    "positions": ["Top"],
     "species": ["Void"],
     "rangeType": "Melee",
     "region": "Void",
@@ -193,7 +193,7 @@
   },
   "Corki": {
     "gender": "Male",
-    "positions": ["Mid"],
+    "positions": ["Bot", "Mid"],
     "species": ["Yordle"],
     "rangeType": "Ranged",
     "region": "Bandle City",
@@ -241,7 +241,7 @@
   },
   "Elise": {
     "gender": "Female",
-    "positions": ["Jungle"],
+    "positions": ["Jungle", "Support"],
     "species": ["Human", "Demon"],
     "rangeType": "Ranged",
     "region": "Shadow Isles",
@@ -282,7 +282,7 @@
   "Fizz": {
     "gender": "Male",
     "positions": ["Mid"],
-    "species": ["Vastaya"],
+    "species": ["Yordle"],
     "rangeType": "Melee",
     "region": "Bilgewater",
     "releaseYear": 2012
@@ -321,7 +321,7 @@
   },
   "Gragas": {
     "gender": "Male",
-    "positions": ["Jungle", "Top", "Support"],
+    "positions": ["Top", "Jungle", "Support"],
     "species": ["Human"],
     "rangeType": "Melee",
     "region": "Freljord",
@@ -401,7 +401,7 @@
   },
   "JarvanIV": {
     "gender": "Male",
-    "positions": ["Jungle", "Top"],
+    "positions": ["Jungle"],
     "species": ["Human"],
     "rangeType": "Melee",
     "region": "Demacia",
@@ -465,7 +465,7 @@
   },
   "Karma": {
     "gender": "Female",
-    "positions": ["Support", "Mid"],
+    "positions": ["Support", "Top"],
     "species": ["Human"],
     "rangeType": "Ranged",
     "region": "Ionia",
@@ -473,7 +473,7 @@
   },
   "Karthus": {
     "gender": "Male",
-    "positions": ["Jungle", "Mid"],
+    "positions": ["Jungle", "Bot"],
     "species": ["Undead"],
     "rangeType": "Ranged",
     "region": "Shadow Isles",
@@ -565,7 +565,7 @@
     "species": ["Human"],
     "rangeType": "Melee",
     "region": "Ionia",
-    "releaseYear": 2012
+    "releaseYear": 2011
   },
   "Leona": {
     "gender": "Female",
@@ -617,8 +617,8 @@
   },
   "Malphite": {
     "gender": "Male",
-    "positions": ["Top", "Support"],
-    "species": ["Golem"],
+    "positions": ["Top", "Jungle", "Support"],
+    "species": ["Construct"],
     "rangeType": "Melee",
     "region": "Ixtal",
     "releaseYear": 2009
@@ -633,7 +633,7 @@
   },
   "Maokai": {
     "gender": "Male",
-    "positions": ["Support", "Top"],
+    "positions": ["Support", "Jungle", "Top"],
     "species": ["Spirit"],
     "rangeType": "Melee",
     "region": "Shadow Isles",
@@ -649,7 +649,7 @@
   },
   "Mel": {
     "gender": "Female",
-    "positions": ["Mid"],
+    "positions": ["Mid", "Support"],
     "species": ["Human"],
     "rangeType": "Ranged",
     "region": "Noxus",
@@ -689,7 +689,7 @@
   },
   "Morgana": {
     "gender": "Female",
-    "positions": ["Support", "Mid"],
+    "positions": ["Support", "Mid", "Jungle"],
     "species": ["Celestial", "Human"],
     "rangeType": "Ranged",
     "region": "Demacia",
@@ -697,7 +697,7 @@
   },
   "Naafiri": {
     "gender": "Female",
-    "positions": ["Mid"],
+    "positions": ["Mid", "Jungle"],
     "species": ["Darkin"],
     "rangeType": "Melee",
     "region": "Shurima",
@@ -729,7 +729,7 @@
   },
   "Neeko": {
     "gender": "Female",
-    "positions": ["Mid", "Support"],
+    "positions": ["Support", "Mid"],
     "species": ["Vastaya"],
     "rangeType": "Ranged",
     "region": "Ixtal",
@@ -738,7 +738,7 @@
   "Nidalee": {
     "gender": "Female",
     "positions": ["Jungle"],
-    "species": ["Human", "Vastaya"],
+    "species": ["Human"],
     "rangeType": "Ranged",
     "region": "Ixtal",
     "releaseYear": 2009
@@ -817,7 +817,7 @@
   },
   "Qiyana": {
     "gender": "Female",
-    "positions": ["Mid"],
+    "positions": ["Mid", "Jungle"],
     "species": ["Human"],
     "rangeType": "Melee",
     "region": "Ixtal",
@@ -842,14 +842,14 @@
   "Rammus": {
     "gender": "Male",
     "positions": ["Jungle"],
-    "species": ["God"],
+    "species": ["Unknown"],
     "rangeType": "Melee",
     "region": "Shurima",
     "releaseYear": 2009
   },
   "RekSai": {
     "gender": "Female",
-    "positions": ["Jungle"],
+    "positions": ["Jungle", "Top"],
     "species": ["Void"],
     "rangeType": "Melee",
     "region": "Void",
@@ -899,7 +899,7 @@
     "gender": "Male",
     "positions": ["Top", "Jungle"],
     "species": ["Yordle"],
-    "rangeType": "Ranged",
+    "rangeType": "Melee",
     "region": "Bandle City",
     "releaseYear": 2011
   },
@@ -953,7 +953,7 @@
   },
   "Shaco": {
     "gender": "Male",
-    "positions": ["Jungle"],
+    "positions": ["Jungle", "Support"],
     "species": ["Demon"],
     "rangeType": "Melee",
     "region": "Runeterra",
@@ -961,7 +961,7 @@
   },
   "Shen": {
     "gender": "Male",
-    "positions": ["Top"],
+    "positions": ["Top", "Jungle"],
     "species": ["Human"],
     "rangeType": "Melee",
     "region": "Ionia",
@@ -1001,7 +1001,7 @@
   },
   "Skarner": {
     "gender": "Male",
-    "positions": ["Jungle"],
+    "positions": ["Jungle", "Top"],
     "species": ["Brackern"],
     "rangeType": "Melee",
     "region": "Shurima",
@@ -1065,7 +1065,7 @@
   },
   "Taliyah": {
     "gender": "Female",
-    "positions": ["Jungle", "Mid"],
+    "positions": ["Mid", "Jungle"],
     "species": ["Human"],
     "rangeType": "Ranged",
     "region": "Shurima",
@@ -1073,7 +1073,7 @@
   },
   "Talon": {
     "gender": "Male",
-    "positions": ["Mid", "Jungle"],
+    "positions": ["Mid"],
     "species": ["Human"],
     "rangeType": "Melee",
     "region": "Noxus",
@@ -1105,7 +1105,7 @@
   },
   "Tristana": {
     "gender": "Female",
-    "positions": ["Bot"],
+    "positions": ["Bot", "Mid"],
     "species": ["Yordle"],
     "rangeType": "Ranged",
     "region": "Bandle City",
@@ -1113,7 +1113,7 @@
   },
   "Trundle": {
     "gender": "Male",
-    "positions": ["Jungle", "Top", "Support"],
+    "positions": ["Jungle", "Top"],
     "species": ["Troll"],
     "rangeType": "Melee",
     "region": "Freljord",
@@ -1161,7 +1161,7 @@
   },
   "Varus": {
     "gender": "Male",
-    "positions": ["Bot", "Mid"],
+    "positions": ["Bot", "Top"],
     "species": ["Darkin", "Human"],
     "rangeType": "Ranged",
     "region": "Ionia",
@@ -1169,7 +1169,7 @@
   },
   "Vayne": {
     "gender": "Female",
-    "positions": ["Bot"],
+    "positions": ["Bot", "Top"],
     "species": ["Human"],
     "rangeType": "Ranged",
     "region": "Demacia",
@@ -1177,7 +1177,7 @@
   },
   "Veigar": {
     "gender": "Male",
-    "positions": ["Mid", "Support"],
+    "positions": ["Mid"],
     "species": ["Yordle"],
     "rangeType": "Ranged",
     "region": "Bandle City",
@@ -1313,7 +1313,7 @@
   },
   "Zaahen": {
     "gender": "Male",
-    "positions": ["Mid", "Top"],
+    "positions": ["Jungle", "Top"],
     "species": ["Human"],
     "rangeType": "Melee",
     "region": "Shurima",
@@ -1321,7 +1321,7 @@
   },
   "Zac": {
     "gender": "Male",
-    "positions": ["Jungle"],
+    "positions": ["Jungle", "Top"],
     "species": ["Golem"],
     "rangeType": "Melee",
     "region": "Zaun",
@@ -1329,7 +1329,7 @@
   },
   "Zed": {
     "gender": "Male",
-    "positions": ["Jungle", "Mid"],
+    "positions": ["Mid", "Jungle"],
     "species": ["Human"],
     "rangeType": "Melee",
     "region": "Ionia",
@@ -1369,7 +1369,7 @@
   },
   "Zyra": {
     "gender": "Female",
-    "positions": ["Support", "Mid"],
+    "positions": ["Support", "Jungle"],
     "species": ["Spirit"],
     "rangeType": "Ranged",
     "region": "Ixtal",

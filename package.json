@@ -7,7 +7,8 @@
     "dev": "tsx src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
-    "deploy-commands": "tsx src/deploy-commands.ts"
+    "deploy-commands": "tsx src/deploy-commands.ts",
+    "update-data": "tsx scripts/update-supplements.ts"
   },
   "dependencies": {
     "better-sqlite3": "^11.0.0",
