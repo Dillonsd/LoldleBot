@@ -13,7 +13,6 @@ import {
 import {
   getChampion,
   getChampionIds,
-  getAllChampions,
   loadChampions,
   addChampionSupplement,
 } from "../data/champions";
@@ -187,7 +186,7 @@ async function handleGiveUp(
     return;
   }
 
-  completeGame(game.id, "lost");
+  completeGame(game.id, "lost", 10);
   const answer = getChampion(puzzle.answerId)!;
   const embed = buildGiveUpEmbed(answer.name, answer.imageUrl);
   await interaction.reply({ embeds: [embed] });

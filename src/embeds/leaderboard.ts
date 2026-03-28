@@ -18,7 +18,8 @@ export function buildLeaderboardEmbed(
 
   const lines = entries.map((e, i) => {
     const medal = i === 0 ? "\u{1F947}" : i === 1 ? "\u{1F948}" : i === 2 ? "\u{1F949}" : `${i + 1}.`;
-    return `${medal} <@${e.user_id}> — **${e.wins}** wins (avg ${e.avg_guesses} guesses)`;
+    const giveUpStr = e.give_ups > 0 ? `, ${e.give_ups} give up${e.give_ups !== 1 ? "s" : ""}` : "";
+    return `${medal} <@${e.user_id}> — **${e.wins}** wins${giveUpStr} (avg ${e.avg_guesses} guesses)`;
   });
 
   return new EmbedBuilder()
@@ -42,8 +43,9 @@ export function buildStatsEmbed(
     .addFields(
       { name: "Games Played", value: `${stats.games_played}`, inline: true },
       { name: "Wins", value: `${stats.wins}`, inline: true },
+      { name: "Give Ups", value: `${stats.give_ups}`, inline: true },
       { name: "Win Rate", value: `${winRate}%`, inline: true },
-      { name: "Avg Guesses", value: `${stats.avg_guesses}`, inline: true },
+      { name: "Avg Guesses (wins)", value: `${stats.avg_guesses}`, inline: true },
       { name: "Current Streak", value: `${stats.current_streak}`, inline: true }
     )
     .setColor(0x5865f2);

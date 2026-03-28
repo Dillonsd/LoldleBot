@@ -141,11 +141,18 @@ export function addGuess(gameId: number, championId: string): number {
 
 export function completeGame(
   gameId: number,
-  status: "won" | "lost"
+  status: "won" | "lost",
+  overrideGuessCount?: number
 ): void {
-  db.prepare(
-    "UPDATE games SET status = ?, completed_at = datetime('now') WHERE id = ?"
-  ).run(status, gameId);
+  if (overrideGuessCount !== undefined) {
+    db.prepare(
+      "UPDATE games SET status = ?, completed_at = datetime('now'), guess_count = ? WHERE id = ?"
+    ).run(status, overrideGuessCount, gameId);
+  } else {
+    db.prepare(
+      "UPDATE games SET status = ?, completed_at = datetime('now') WHERE id = ?"
+    ).run(status, gameId);
+  }
 }
 
 export function getGuessedChampions(gameId: number): string[] {
@@ -162,6 +169,7 @@ export function getGuessedChampions(gameId: number): string[] {
 export interface LeaderboardEntry {
   user_id: string;
   wins: number;
+  give_ups: number;
   avg_guesses: number;
 }
 
@@ -181,9 +189,12 @@ export function getLeaderboard(
 
   return db
     .prepare(
-      `SELECT g.user_id, COUNT(*) as wins, ROUND(AVG(g.guess_count), 1) as avg_guesses
+      `SELECT g.user_id,
+              SUM(CASE WHEN g.status = 'won' THEN 1 ELSE 0 END) as wins,
+              SUM(CASE WHEN g.status = 'lost' THEN 1 ELSE 0 END) as give_ups,
+              ROUND(AVG(CASE WHEN g.status = 'won' THEN g.guess_count END), 1) as avg_guesses
        FROM games g
-       WHERE g.guild_id = ? AND g.status = 'won' AND g.troll_target IS NULL ${dateFilter}
+       WHERE g.guild_id = ? AND g.troll_target IS NULL ${dateFilter}
        GROUP BY g.user_id
        ORDER BY wins DESC, avg_guesses ASC
        LIMIT 10`
@@ -194,6 +205,7 @@ export function getLeaderboard(
 export interface UserStats {
   games_played: number;
   wins: number;
+  give_ups: number;
   avg_guesses: number;
   current_streak: number;
 }
@@ -278,12 +290,14 @@ export function getUserStats(guildId: string, userId: string): UserStats {
       `SELECT
          COUNT(*) as games_played,
          SUM(CASE WHEN status = 'won' THEN 1 ELSE 0 END) as wins,
+         SUM(CASE WHEN status = 'lost' THEN 1 ELSE 0 END) as give_ups,
          ROUND(AVG(CASE WHEN status = 'won' THEN guess_count END), 1) as avg_guesses
        FROM games WHERE guild_id = ? AND user_id = ? AND troll_target IS NULL`
     )
     .get(guildId, userId) as {
     games_played: number;
     wins: number;
+    give_ups: number;
     avg_guesses: number | null;
   };
 
@@ -306,6 +320,7 @@ export function getUserStats(guildId: string, userId: string): UserStats {
   return {
     games_played: stats.games_played,
     wins: stats.wins,
+    give_ups: stats.give_ups,
     avg_guesses: stats.avg_guesses ?? 0,
     current_streak: streak,
   };
