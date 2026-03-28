@@ -23,6 +23,7 @@ export function initDatabase(): void {
       status TEXT NOT NULL DEFAULT 'active',
       guess_count INTEGER NOT NULL DEFAULT 0,
       completed_at TEXT,
+      troll_target TEXT,
       UNIQUE(guild_id, user_id, date)
     );
 
@@ -35,9 +36,21 @@ export function initDatabase(): void {
       UNIQUE(game_id, guess_num)
     );
 
+    CREATE TABLE IF NOT EXISTS trolled_users (
+      user_id TEXT PRIMARY KEY
+    );
+
     CREATE INDEX IF NOT EXISTS idx_games_user ON games(user_id, date);
     CREATE INDEX IF NOT EXISTS idx_games_guild_date ON games(guild_id, date);
   `);
+
+  // Migrations: ALTER TABLE doesn't support IF NOT EXISTS in SQLite,
+  // so attempt each and ignore "duplicate column" errors.
+  try {
+    db.exec("ALTER TABLE games ADD COLUMN troll_target TEXT");
+  } catch {
+    // Column already exists — nothing to do
+  }
 
   console.log("[Database] Initialized");
 }
@@ -71,6 +84,7 @@ export interface GameRow {
   status: string;
   guess_count: number;
   completed_at: string | null;
+  troll_target: string | null;
 }
 
 export function getActiveGame(
@@ -103,6 +117,7 @@ export function createGame(
     status: "active",
     guess_count: 0,
     completed_at: null,
+    troll_target: null,
   };
 }
 
@@ -168,7 +183,7 @@ export function getLeaderboard(
     .prepare(
       `SELECT g.user_id, COUNT(*) as wins, ROUND(AVG(g.guess_count), 1) as avg_guesses
        FROM games g
-       WHERE g.guild_id = ? AND g.status = 'won' ${dateFilter}
+       WHERE g.guild_id = ? AND g.status = 'won' AND g.troll_target IS NULL ${dateFilter}
        GROUP BY g.user_id
        ORDER BY wins DESC, avg_guesses ASC
        LIMIT 10`
@@ -183,6 +198,60 @@ export interface UserStats {
   current_streak: number;
 }
 
+export function setTrollTarget(gameId: number, championId: string): void {
+  db.prepare("UPDATE games SET troll_target = ? WHERE id = ?").run(championId, gameId);
+}
+
+// --- Troll ---
+
+export function isUserTrolled(userId: string): boolean {
+  const row = db.prepare("SELECT 1 FROM trolled_users WHERE user_id = ?").get(userId);
+  return row !== undefined;
+}
+
+export function trollUser(userId: string): void {
+  db.prepare("INSERT OR IGNORE INTO trolled_users (user_id) VALUES (?)").run(userId);
+}
+
+export function untrollUser(userId: string): void {
+  db.prepare("DELETE FROM trolled_users WHERE user_id = ?").run(userId);
+}
+
+export interface GameSummary {
+  id: number;
+  guild_id: string;
+  user_id: string;
+  date: string;
+  status: string;
+  guess_count: number;
+  troll_target: string | null;
+}
+
+export function listGamesForUser(userId: string): GameSummary[] {
+  return db
+    .prepare(`SELECT id, guild_id, user_id, date, status, guess_count, troll_target
+              FROM games WHERE user_id = ? ORDER BY date DESC`)
+    .all(userId) as GameSummary[];
+}
+
+export function listAllGames(): GameSummary[] {
+  return db
+    .prepare(`SELECT id, guild_id, user_id, date, status, guess_count, troll_target
+              FROM games ORDER BY date DESC, id DESC`)
+    .all() as GameSummary[];
+}
+
+export function deleteGame(gameId: number): number {
+  db.prepare("DELETE FROM guesses WHERE game_id = ?").run(gameId);
+  const result = db.prepare("DELETE FROM games WHERE id = ?").run(gameId);
+  return result.changes;
+}
+
+export function listTrolledUsers(): string[] {
+  const rows = db.prepare("SELECT user_id FROM trolled_users").all() as { user_id: string }[];
+  return rows.map((r) => r.user_id);
+}
+
 export function getUserStats(guildId: string, userId: string): UserStats {
   const stats = db
     .prepare(
@@ -190,7 +259,7 @@ export function getUserStats(guildId: string, userId: string): UserStats {
          COUNT(*) as games_played,
          SUM(CASE WHEN status = 'won' THEN 1 ELSE 0 END) as wins,
          ROUND(AVG(CASE WHEN status = 'won' THEN guess_count END), 1) as avg_guesses
-       FROM games WHERE guild_id = ? AND user_id = ?`
+       FROM games WHERE guild_id = ? AND user_id = ? AND troll_target IS NULL`
     )
     .get(guildId, userId) as {
     games_played: number;
@@ -201,7 +270,7 @@ export function getUserStats(guildId: string, userId: string): UserStats {
   // Calculate current streak (scoped to this server)
   const recentGames = db
     .prepare(
-      `SELECT status FROM games WHERE guild_id = ? AND user_id = ? ORDER BY date DESC`
+      `SELECT status FROM games WHERE guild_id = ? AND user_id = ? AND troll_target IS NULL ORDER BY date DESC`
     )
     .all(guildId, userId) as { status: string }[];
 

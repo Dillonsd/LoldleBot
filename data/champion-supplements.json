@@ -241,7 +241,7 @@
   },
   "Elise": {
     "gender": "Female",
-    "positions": ["Jungle", "Support"],
+    "positions": ["Jungle"],
     "species": ["Human", "Demon"],
     "rangeType": "Ranged",
     "region": "Shadow Isles",
