@@ -7,7 +7,8 @@
  *   node dist/scripts/games.js delete <gameId>
  */
 
-import { initDatabase, listGamesForUser, listAllGames, deleteGame, GameSummary } from "../database/init";
+import { initDatabase, listGamesForUser, listAllGames, deleteGame, getDailyPuzzle, GameSummary } from "../database/init";
+import { getTodayUTC } from "../utils/date";
 
 initDatabase();
 
@@ -67,7 +68,18 @@ switch (command) {
     break;
   }
 
+  case "today": {
+    const today = getTodayUTC();
+    const answerId = getDailyPuzzle(today);
+    if (!answerId) {
+      console.log(`No puzzle set for today (${today}) yet.`);
+    } else {
+      console.log(`Today's answer (${today}): ${answerId}`);
+    }
+    break;
+  }
+
   default:
-    console.error("Commands: list-all | list <userId> | delete <gameId>");
+    console.error("Commands: list-all | list <userId> | delete <gameId> | today");
     process.exit(1);
 }

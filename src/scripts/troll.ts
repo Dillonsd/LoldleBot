@@ -7,7 +7,8 @@
  *   node dist/scripts/troll.js list
  */
 
-import { initDatabase, trollUser, untrollUser, listTrolledUsers } from "../database/init";
+import { initDatabase, trollUser, untrollUser, listTrolledUsers, getDailyPuzzle, clearCorrectGuessOnUntroll } from "../database/init";
+import { getTodayUTC } from "../utils/date";
 
 initDatabase();
 
@@ -24,6 +25,14 @@ switch (command) {
     if (!userId) { console.error("Usage: troll remove <userId>"); process.exit(1); }
     untrollUser(userId);
     console.log(`Untrolled: ${userId}`);
+    const today = getTodayUTC();
+    const answerId = getDailyPuzzle(today);
+    if (answerId) {
+      const cleared = clearCorrectGuessOnUntroll(userId, today, answerId);
+      if (cleared > 0) {
+        console.log(`Cleared correct guess from active game so they can guess again.`);
+      }
+    }
     break;
 
   case "list": {

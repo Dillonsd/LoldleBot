@@ -217,6 +217,26 @@ export function untrollUser(userId: string): void {
   db.prepare("DELETE FROM trolled_users WHERE user_id = ?").run(userId);
 }
 
+export function clearCorrectGuessOnUntroll(userId: string, date: string, correctChampionId: string): number {
+  const games = db
+    .prepare(`SELECT id, guess_count FROM games WHERE user_id = ? AND date = ? AND status = 'active'`)
+    .all(userId, date) as { id: number; guess_count: number }[];
+
+  let removed = 0;
+  for (const game of games) {
+    const result = db
+      .prepare(`DELETE FROM guesses WHERE game_id = ? AND champion_id = ?`)
+      .run(game.id, correctChampionId);
+    if (result.changes > 0) {
+      db.prepare(`UPDATE games SET guess_count = guess_count - 1, troll_target = NULL WHERE id = ?`).run(game.id);
+      removed++;
+    } else {
+      db.prepare(`UPDATE games SET troll_target = NULL WHERE id = ?`).run(game.id);
+    }
+  }
+  return removed;
+}
+
 export interface GameSummary {
   id: number;
   guild_id: string;
