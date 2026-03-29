@@ -4,7 +4,6 @@ import {
   AutocompleteInteraction,
 } from "discord.js";
 import { getAllChampions, getChampion, getChampionIds } from "../data/champions";
-import { Champion } from "../data/types";
 import { compareGuess } from "../game/classic";
 import { getDailyChampionId } from "../game/daily";
 import { getTodayUTC } from "../utils/date";
@@ -17,15 +16,13 @@ import {
   completeGame,
   getGuessedChampions,
   isUserTrolled,
-  setTrollTarget,
 } from "../database/init";
 import { buildGuessEmbed, buildVictoryEmbed, buildPublicVictoryEmbed } from "../embeds/guess-result";
 import { getUserStats } from "../database/init";
 
-function pickTrollTarget(realAnswerId: string, excluded: string[], allChampions: Champion[]): string {
-  const pool = allChampions.filter((c) => c.id !== realAnswerId && !excluded.includes(c.id));
-  if (pool.length === 0) return realAnswerId; // fallback: shouldn't happen
-  return pool[Math.floor(Math.random() * pool.length)].id;
+function trollYear(realYear: number): number {
+  // Shift the year so it never matches — push away from real year by 2
+  return realYear > 2015 ? realYear - 2 : realYear + 2;
 }
 
 export const data = new SlashCommandBuilder()
@@ -118,27 +115,11 @@ export async function execute(
     return;
   }
 
-  // Troll logic: trolled users always see wrong feedback
+  // Troll logic: same feedback as real answer except year is shifted so they can never win
   const trolled = isUserTrolled(interaction.user.id);
-  let effectiveAnswer = answer;
-
-  if (trolled) {
-    // Assign a troll target if this game doesn't have one yet
-    if (!game.troll_target) {
-      const trollTarget = pickTrollTarget(answerId, [], getAllChampions());
-      setTrollTarget(game.id, trollTarget);
-      game = { ...game, troll_target: trollTarget };
-    }
-
-    // If they just guessed the current troll target, swap to a new one
-    if (championId === game.troll_target) {
-      const newTarget = pickTrollTarget(answerId, [...previousGuesses, championId], getAllChampions());
-      setTrollTarget(game.id, newTarget);
-      game = { ...game, troll_target: newTarget };
-    }
-
-    effectiveAnswer = getChampion(game.troll_target!) ?? answer;
-  }
+  const effectiveAnswer = trolled
+    ? { ...answer, releaseYear: trollYear(answer.releaseYear) }
+    : answer;
 
   // Record guess
   const guessNum = addGuess(game.id, championId);
