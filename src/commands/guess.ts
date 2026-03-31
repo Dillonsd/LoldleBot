@@ -4,6 +4,7 @@ import {
   AutocompleteInteraction,
 } from "discord.js";
 import { getAllChampions, getChampion, getChampionIds } from "../data/champions";
+import { Champion, Gender, RangeType } from "../data/types";
 import { compareGuess } from "../game/classic";
 import { getDailyChampionId } from "../game/daily";
 import { getTodayUTC } from "../utils/date";
@@ -20,9 +21,42 @@ import {
 import { buildGuessEmbed, buildVictoryEmbed, buildPublicVictoryEmbed } from "../embeds/guess-result";
 import { getUserStats } from "../database/init";
 
-function trollYear(realYear: number): number {
-  // Shift the year so it never matches — push away from real year by 2
-  return realYear > 2015 ? realYear - 2 : realYear + 2;
+function isAllCorrect(champion: Champion, answer: Champion): boolean {
+  const sameArrays = (a: string[], b: string[]) => {
+    const sa = new Set(a.map((s) => s.toLowerCase()));
+    const sb = new Set(b.map((s) => s.toLowerCase()));
+    return sa.size === sb.size && [...sa].every((v) => sb.has(v));
+  };
+  return (
+    champion.gender.toLowerCase() === answer.gender.toLowerCase() &&
+    champion.rangeType.toLowerCase() === answer.rangeType.toLowerCase() &&
+    champion.region.toLowerCase() === answer.region.toLowerCase() &&
+    champion.resource.toLowerCase() === answer.resource.toLowerCase() &&
+    champion.releaseYear === answer.releaseYear &&
+    sameArrays(champion.positions, answer.positions) &&
+    sameArrays(champion.species, answer.species)
+  );
+}
+
+function buildTrollAnswer(answer: Champion, allChampions: Champion[]): Champion {
+  const flipGender = (g: Gender): Gender =>
+    g === "Male" ? "Female" : g === "Female" ? "Male" : "Female";
+  const flipRange = (r: RangeType): RangeType =>
+    r === "Melee" ? "Ranged" : "Melee";
+  const shiftYear = (y: number) => (y > 2015 ? y - 2 : y + 2);
+
+  let fake: Champion = {
+    ...answer,
+    gender: flipGender(answer.gender),
+    releaseYear: shiftYear(answer.releaseYear),
+  };
+
+  // Ensure no real champion would show all-correct against this fake answer
+  if (allChampions.some((c) => isAllCorrect(c, fake))) {
+    fake = { ...fake, rangeType: flipRange(fake.rangeType) };
+  }
+
+  return fake;
 }
 
 export const data = new SlashCommandBuilder()
@@ -118,7 +152,7 @@ export async function execute(
   // Troll logic: same feedback as real answer except year is shifted so they can never win
   const trolled = isUserTrolled(interaction.user.id);
   const effectiveAnswer = trolled
-    ? { ...answer, releaseYear: trollYear(answer.releaseYear) }
+    ? buildTrollAnswer(answer, getAllChampions())
     : answer;
 
   // Record guess
