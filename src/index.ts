@@ -49,7 +49,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
 });
 
 async function main() {
-  console.log("[Bot] Starting...");
+  console.log("[Bot v1.0] Starting...");
 
   initDatabase();
 
